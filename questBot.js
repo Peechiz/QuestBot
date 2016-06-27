@@ -2,10 +2,11 @@ console.log('The QuestGiverNPC is alive');
 
 var Twit = require('twit');
 var Client = require('node-rest-client').Client;
+require('dotenv');
 
 var client = new Client();
 
-var wordnikApi = 'eea26315166006d3c02ca06c6cf00e42bd0d6eca6fb7aad9f';
+var wordnikApi = process.env.WORDNIK_API_KEY;
 
 var T = new Twit({
     consumer_key:         process.env.TWITTER_CONSUMER_KEY
