@@ -1,0 +1,26 @@
+{
+  "name": "quest_bot_npc",
+  "version": "1.0.0",
+  "description": "A twitter bot to give quests",
+  "main": "questBot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Chris Impicciche",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^2.0.0",
+    "node-rest-client": "^1.8.0",
+    "node-restclient": "0.0.1",
+    "twit": "^2.1.1"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Peechiz/QuestBot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Peechiz/QuestBot/issues"
+  },
+  "homepage": "https://github.com/Peechiz/QuestBot#readme"
+}
