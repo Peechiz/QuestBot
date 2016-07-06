@@ -1,18 +1,16 @@
 console.log('The QuestGiverNPC is alive');
 
 var Twit = require('twit');
-var Client = require('node-rest-client').Client;
-require('dotenv');
-
-var client = new Client();
+var rp = require('request-promise');
+require('dotenv').load();
 
 var wordnikApi = process.env.WORDNIK_API_KEY;
 
 var T = new Twit({
-    consumer_key:         process.env.TWITTER_CONSUMER_KEY
-  , consumer_secret:      process.env.TWITTER_CONSUMER_SECRET
-  , access_token:         process.env.TWITTER_ACCESS_TOKEN
-  , access_token_secret:  process.env.TWITTER_ACCESS_TOKEN_SECRET
+  consumer_key:         process.env.TWITTER_CONSUMER_KEY,
+  consumer_secret:      process.env.TWITTER_CONSUMER_SECRET,
+  access_token:         process.env.TWITTER_ACCESS_TOKEN,
+  access_token_secret:  process.env.TWITTER_ACCESS_TOKEN_SECRET
 });
 
 
@@ -20,7 +18,6 @@ var T = new Twit({
 
 
 function tweetQuest(quest) {
-	var tweet = quest
 
 	function tweeted(err, data, response) {
 		if (err) {
@@ -28,143 +25,107 @@ function tweetQuest(quest) {
 			console.log('error: '+ err);
 			console.log('data: ' + data);
 		} else {
-			console.log("I tweeted.");
+			console.log("I tweeted:",quest);
 		}
 	}
 
-	T.post('statuses/update', {status: tweet}, tweeted);
+	T.post('statuses/update', {status: quest}, tweeted);
 
 };
 
 
 // ------------------------------------------------------------------------ //
 
-
-var reltype = 'same-context';
 var locationRoots = ['plateau', 'swamp', 'forest', 'cavern', 'palace'];
 
-var getLocationUrl = 	"http://api.wordnik.com:80/v4/word.json/" +
-											locationRoots[Math.floor(Math.random()*locationRoots.length)] +
-											"/relatedWords?useCanonical=false&relationshipTypes=" +
-											reltype +
-											"&limitPerRelationshipType=30&api_key=" +
-											wordnikApi
-;
-
-var getAdjsURL =  "http://api.wordnik.com/v4/words.json/randomWords?" +
-                  "hasDictionaryDef=true&includePartOfSpeech=adjective&limit=2&" +
-                  "minCorpusCount=100&api_key=" +
-                  wordnikApi
-;
-
-var getNounPl = "http://api.wordnik.com:80/v4/words.json/randomWord?" +
-								"hasDictionaryDef=true&includePartOfSpeech=noun-plural&excludePartOfSpeech=proper-noun-plural&minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=5&maxLength=-1&api_key="
-								+ wordnikApi
-;
-
-
-function fetchQuest() {
-	tweet = '';
-	client.get(getAdjsURL,
-	function(data, response){
-		//console.log(data)
-		//console.log(response)
-		adj1 = data[0].word
-		//console.log("Adjective is: " + adj1)
-
-		client.get(getNounPl,
-			function(data2, response){
-				//console.log(data2)
-				nounpl1 = data2.word
-				//console.log("Noun Pl is: " + nounpl1)
-
-			client.get(getAdjsURL,
-				function(data3, response){
-					//console.log(data3)
-					adj2 = data3[0].word
-					//console.log("Adj2 is: " + adj2)
-
-				client.get(getLocationUrl,
-				function(data4,response){
-					//console.log(data4)
-					location = data4[0].words[Math.floor(Math.random()*data4[0].words.length)]
-					//console.log("location is: " + location)
-
-					tweet += "Bring me " + Math.floor(Math.random()*100+2).toString() + " "+ adj1 +
-						" " + nounpl1 + " " + "from the " + adj2 + " " + location + "!";
-
-					console.log(tweet)
-					tweetQuest(tweet);
-				})
-			})
-		})
-	})
-};
-
-
-
-// TEST
-//fetchQuest();
-// TEST
-
-
-
-
-function favRTs () {
-  T.get('statuses/retweets_of_me', {}, function (e,r) {
-    for(var i=0;i<r.length;i++) {
-      T.post('favorites/create/'+r[i].id_str,{},function(){});
-    }
-    console.log('harvested some RTs');
-  });
+function randomItem(arr) {
+  var index = Math.floor(Math.random()*arr.length);
+  return arr[index];
 }
 
-function followReply(txt) {
+function randomNumber() {
+  return Math.ceil(Math.random()*100+1).toString()
+}
 
-	var tweet = {
-		status: txt
-	}
-
-	T.post('statuses/update', tweet, tweeted);
-
-	function tweeted(err, data, response){
-		if (err) {
-			console.log("Something went terribly wrong, and I didn't tweet.");
-			console.log('error: '+ err);
-			console.log('data: ' + data);
-		} else {
-			console.log("I tweeted.")
-		}
-	}
+var getAdj = {
+  uri: 'http://api.wordnik.com/v4/words.json/randomWords',
+  qs: {
+      hasDictionaryDef: true,
+      includePartOfSpeech: 'adjective',
+      limit: 2,
+      minCorpusCount: 100,
+      api_key: wordnikApi
+  },
+  headers: {
+      'User-Agent': 'Request-Promise'
+  },
+  json: true // Automatically parses the JSON string in the response
 };
 
-// // Setting up a user stream
-// var stream = T.stream('user');
+var getNounPl = {
+  uri: 'http://api.wordnik.com:80/v4/words.json/randomWord',
+  qs: {
+    hasDictionaryDef: true,
+    includePartOfSpeech: 'noun-plural',
+    excludePartOfSpeech: 'proper-noun-plural',
+    minCorpusCount: 0,
+    maxCorpusCount: -1,
+    minDictionaryCount: 1,
+    maxDictionaryCount: -1,
+    minLength: 5,
+    maxLength: -1,
+    api_key: wordnikApi
+  },
+  headers: {
+    'User-Agent': 'Request-Promise'
+  },
+  json: true // Automatically parses the JSON string in the response
+}
 
-// // Anytime someone follows me
-// stream.on('follow', followed);
+var getLocation = {
+  uri: `http://api.wordnik.com:80/v4/word.json/${randomItem(locationRoots)}/relatedWords`,
+  qs: {
+    useCanonical: false,
+    relationshipTypes: 'same-context',
+    limitPerRelationshipType: 30,
+    api_key: wordnikApi
+  },
+  headers: {
+    'User-Agent': 'Request-Promise'
+  },
+  json: true // Automatically parses the JSON string in the response
+}
 
-// function followed(event){
-// 	console.log("Someone followed me!")
-// 	var name = event.source.name;
-// 	var screenName = event.source.screen_name;
-// 	followReply('.@' + screenName + ' Thanks for your help, adventurer.');
-// };
+function quest(){
+  var adj1 = rp(getAdj),
+  adj2 = rp(getAdj),
+  nounPl = rp(getNounPl),
+  location = rp(getLocation);
 
-// // every 5 hours, check for people who have RTed a quest, and favorite that quest
-// setInterval(function() {
-//   try {
-//     favRTs();
-//   }
-//  catch (e) {
-//     console.log(e);
-//   }
-// },60000*60*5);
+  Promise.all([adj1,adj2,nounPl,location])
+  .then(values => {
+    var adj1 = values[0][0].word,
+    adj2 = values[1][0].word,
+    nounPl = values[2].word,
+    location = randomItem(values[3][0].words);
 
-//every hour, tweet a quest
+    var fetch = [
+      `Bring me ${randomNumber()} ${adj1} ${nounPl} from the ${adj2} ${location}!`,
+      `Hero! Can you get me ${randomNumber()} ${adj1} ${nounPl}? I am far too ${adj2}.`,
+      `Alas! Without ${randomNumber()} ${nounPl}, our village is doomed!`
+    ]
+
+    var quest = randomItem(fetch);
+    tweetQuest(quest);
+  })
+}
+
+
+// ------------------------------------------------------------------------ //
+quest()
 setInterval(function() {
   try {
-    fetchQuest();
+    quest();
   }
   catch (e) {
     console.log(e);
