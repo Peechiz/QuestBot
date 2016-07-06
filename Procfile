@@ -1,1 +1,1 @@
-web: node questBot.js
+worker: node questBot.js
