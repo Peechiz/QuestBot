@@ -129,9 +129,9 @@ function quest(){
 
     var fetch = [
       `Bring me ${randomNumber()} ${adj1} ${nounPl} from the ${adj2} ${location}!`,
-      `Hero! Can you get me ${randomNumber()} ${adj1} ${nounPl}? I am far too ${adj2}.`,
-      `Alas! Without ${randomNumber()} ${nounPl}, our village is doomed!`,
-      `Our village can have no peace until ${name} the ${adj1} ${occupation} is destroyed!`,
+      `#Hero! Can you get me ${randomNumber()} ${adj1} ${nounPl}? I am far too ${adj2}.`,
+      `Alas! Without ${randomNumber()} ${nounPl}, our #village is doomed!`,
+      `Our #village can have no peace until ${name} the ${adj1} ${occupation} is destroyed!`,
       `Bring me the ${prize} of ${name} the ${occupation}!`,
       `Hunt ${randomNumber()} ${adj1} ${location} ${beast}, and your reward will be great`,
       `The festival cannot commence without ${randomNumber()} ${adj1} ${nounPl}.`,
