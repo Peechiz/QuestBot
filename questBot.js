@@ -135,7 +135,7 @@ function quest(){
       `Bring me the ${prize} of ${name} the ${occupation}!`,
       `Hunt ${randomNumber()} ${adj1} ${location} ${beast}, and your reward will be great`,
       `The festival cannot commence without ${randomNumber()} ${adj1} ${nounPl}.`,
-      `You there, ${occupation}! Make yourself useful and kill these ${location} ${beast}`
+      `You there, ${occupation}! Make yourself useful and kill these ${location} ${beast}.`
     ]
 
     var quest = randomItem(fetch);
