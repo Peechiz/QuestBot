@@ -145,11 +145,6 @@ function quest(){
   })
 }
 
-// rp(getRelated(locations)).then(res=>{console.log('loc:',randomItem(res[0].words))})
-// rp(getRelated(occupations)).then(res=>{console.log('job:',randomItem(res[0].words))})
-// rp(getRelated(loot)).then(res=>{console.log('loot:',randomItem(res[0].words))})
-// rp(getRelated(animal)).then(res=>{console.log('beast:',randomItem(res[0].words))})
-
 // ------------------------------------------------------------------------ //
 quest()
 setInterval(function() {
